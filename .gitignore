@@ -115,5 +115,4 @@ dmypy.json
 *.xml
 *.iml
 *.mid
-!midi_songs/*.mid
 .DS_Store

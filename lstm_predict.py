@@ -13,7 +13,7 @@ import midi_reader
 import midi_generator
 
 TIME_STEPS = 100
-OUTPUT_LENGTH = 32
+OUTPUT_LENGTH = 64
 
 
 def generate():

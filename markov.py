@@ -9,7 +9,7 @@ data_graph = []
 markov_out = []
 s = stream.Stream()
 
-OUTPUT_LENGTH = 32
+OUTPUT_LENGTH = 64
 
 # Get parsed midi data.
 notes_array = midi_reader.get_midi_data()

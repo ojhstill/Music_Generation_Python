@@ -11,7 +11,7 @@ import midi_generator
 
 FREQ_THRESHOLD = 25
 TIME_STEPS = 100
-OUTPUT_LENGTH = 32
+OUTPUT_LENGTH = 64
 
 
 def wavenet(unique_x, unique_y):
