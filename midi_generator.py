@@ -29,7 +29,7 @@ def create_midi(prediction_output):
             output_notes.append(new_note)
 
         # increase offset each iteration so that notes do not stack
-        offset += 0.5
+        offset += 1
 
     midi_stream = stream.Stream(output_notes)
 

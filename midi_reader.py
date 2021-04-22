@@ -33,14 +33,20 @@ def get_notes(file):
     return notes
 
 
-def get_midi_data():
+def get_midi_dataset():
+
+    with open('data/notes', 'rb') as filepath:
+        return pickle.load(filepath)
+
+
+def create_dataset():
 
     notes_array = []
 
     # Find all midi files within file path directory.
     for root, dirs, files in os.walk(FILE_PATH):
         for file in files:
-            if file.endswith(".mid"):
+            if file.endswith('.mid'):
                 # Extract all midi data from each midi file.
                 notes_array.append(get_notes(root + '/' + file))
 
@@ -50,5 +56,5 @@ def get_midi_data():
     return notes_array
 
 
-if __name__ == "__main__":
-    print(get_midi_data())
+if __name__ == '__main__':
+    print(create_dataset())

@@ -19,8 +19,7 @@ OUTPUT_LENGTH = 64
 def generate():
     """ Generate a piano midi file """
     # Load the notes used to train the model
-    with open('data/notes', 'rb') as filepath:
-        notes = pickle.load(filepath)
+    notes = midi_reader.get_midi_dataset()
 
     # Get all pitch names
     pitch_names = sorted(set(item for item in notes))
