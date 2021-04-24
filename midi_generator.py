@@ -2,7 +2,7 @@ from music21 import instrument, note, chord, stream
 import time
 
 
-def create_midi(prediction_output):
+def create_midi(prediction_output, network_type):
     """ convert the output from the prediction to notes and create a midi file
         from the notes """
     offset = 0
@@ -33,7 +33,7 @@ def create_midi(prediction_output):
 
     midi_stream = stream.Stream(output_notes)
 
-    file_name = 'output_' + time.strftime("%Y%m%d-%H%M%S") + '.mid'
+    file_name = 'output_' + network_type + '_' + time.strftime("%Y%m%d-%H%M%S") + '.mid'
 
     midi_stream.write('midi', fp=file_name)
     midi_stream.show()

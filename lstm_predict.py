@@ -33,7 +33,7 @@ def generate():
     model.load_weights('lstm_weights.hdf5')
 
     prediction_output = generate_notes(model, network_input, pitch_names, n_vocab)
-    midi_generator.create_midi(prediction_output)
+    midi_generator.create_midi(prediction_output, 'lstm')
 
 
 def prepare_sequences(notes, pitch_names, n_vocab):

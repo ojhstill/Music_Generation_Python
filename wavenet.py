@@ -139,4 +139,4 @@ if __name__ == "__main__":
     x_int_to_note = dict((number, note) for number, note in enumerate(unique_x))
     predicted_notes = [x_int_to_note[i] for i in predictions]
 
-    midi_generator.create_midi(predicted_notes)
+    midi_generator.create_midi(predicted_notes, 'wavenet')

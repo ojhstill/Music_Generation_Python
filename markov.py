@@ -89,7 +89,6 @@ for generated_note in range(OUTPUT_LENGTH - 1):
         if counter >= random_int:
             # Append neighbour to data out.
             markov_out.append(neighbour['nbs_pitch'])
-            # s.append(note.Note(neighbour['nbs_pitch']))
             break
 
-midi_generator.create_midi(markov_out)
+midi_generator.create_midi(markov_out, 'markov')
