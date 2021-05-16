@@ -20,7 +20,7 @@ TIME_STEPS = 100
 
 def train_network():
     """ Train a Neural Network to generate music """
-    notes_array = midi_reader.get_midi_data()
+    notes_array = midi_reader.get_midi_dataset()
 
     # Convert 2D array into 1D array.
     notes = [element for note in notes_array for element in note]
