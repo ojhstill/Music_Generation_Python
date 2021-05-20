@@ -23,7 +23,8 @@ OUTPUT_LENGTH = 64
 
 
 def wavenet(unique_x, unique_y):
-    # Embedding layer.
+
+    # Create LSTM network structure.
     model.add(Embedding(len(unique_x), 100, input_length=32, trainable=True))
 
     model.add(Conv1D(64, 3, padding='causal', activation='relu'))
@@ -44,7 +45,6 @@ def wavenet(unique_x, unique_y):
     model.add(Dense(len(unique_y), activation='softmax'))
 
     model.compile(loss='sparse_categorical_crossentropy', optimizer='adam')
-
     model.summary()
 
     return model

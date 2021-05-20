@@ -1,4 +1,4 @@
-"""Module for the Markov chain model.
+"""Generation module for the Markov chain model.
 
 This module retrieves the midi file data and constructs a weighted graph structure using unique notes and note
 transitions. After construction, a random starting node is selected based on note occurrence in the score. Successive

@@ -1,7 +1,7 @@
 """Prediction module for the LSTM network.
 
-This module uses the weights defined in 'lstm_model.hdf5' to create a LSTM network. The network predicts a sequence
-of notes based on the original dataset and outputs to an array. The output array is passed on to 'midi_generator.py' to
+This module uses the weights defined in 'lstm_model.hdf5' to create a LSTM network. The network predicts a sequence of
+notes based on the original dataset and outputs to an array. The output array is passed on to 'midi_generator.py' to
 convert the array to a MIDI file.
 """
 

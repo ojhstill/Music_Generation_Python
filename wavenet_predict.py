@@ -84,9 +84,6 @@ if __name__ == "__main__":
 
     x_tr, x_val, y_tr, y_val = train_test_split(x_seq, y_seq, test_size=0.2, random_state=0)
 
-    # Loading best model.
-    from keras.models import load_model
-
     model = load_model('weights/wavenet_model.h5')
 
     print('Predicting sequence...')

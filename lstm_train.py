@@ -53,8 +53,9 @@ def prepare_training_sequences(notes, n_vocab):
     return network_input, network_output
 
 
-def create_network(network_input, n_vocab):
-    """ create the structure of the neural network """
+def lstm(network_input, n_vocab):
+
+    # Create LSTM network structure.
     model = Sequential()
     model.add(LSTM(
         128,
@@ -78,7 +79,7 @@ def create_network(network_input, n_vocab):
 
 
 def train(model, network_input, network_output):
-    """ train the neural network """
+
     filepath = 'weights/lstm_model.hdf5'
     checkpoint = ModelCheckpoint(
         filepath,
@@ -103,7 +104,7 @@ if __name__ == '__main__':
     # Setup LSTM network.
     n_vocab = len(set(notes))
     network_input, network_output = prepare_training_sequences(notes, n_vocab)
-    model = create_network(network_input, n_vocab)
+    model = lstm(network_input, n_vocab)
 
     # Train model.
     train(model, network_input, network_output)

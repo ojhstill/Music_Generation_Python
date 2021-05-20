@@ -1,7 +1,7 @@
 """MIDI reader module.
 
-Reads and parses all MIDI files within the 'dataset' file path using 'music21' library representation. Data is
-serialised and cached to a data file for use in model training modules.
+Reads and parses all MIDI files within the 'dataset' folder using 'music21' library representation. Data is serialised
+and cached to a data file for use in model training modules.
 """
 
 # Import libraries.
@@ -28,15 +28,17 @@ def get_notes(file):
     i = interval.Interval(k.tonic, pitch.Pitch('C'))
     transposed_midi = midi.transpose(i)
 
-    try:  # File has instrument parts.
+    try:
+        # File has instrument parts.
         s2 = instrument.partitionByInstrument(transposed_midi)
         notes_to_parse = s2.parts[0].recurse()
-    except Exception:  # File has notes in a flat structure.
+    except Exception:
+        # File has notes in a flat structure.
         notes_to_parse = transposed_midi.flat.notes
 
     for element in notes_to_parse:
         if isinstance(element, note.Note):
-            # If element is an single notes, append pitch name.
+            # If element is a note, append pitch name.
             notes.append(str(element.pitch))
         elif isinstance(element, chord.Chord):
             # If element is a chord, append a chain of intervals from root for each note.
@@ -56,7 +58,7 @@ def get_midi_dataset():
         return pickle.load(filepath)
 
 
-def create_dataset():
+if __name__ == '__main__':
 
     print('Creating dataset...')
 
@@ -74,7 +76,3 @@ def create_dataset():
     with open('data/notes', 'wb') as filepath:
         pickle.dump(notes_array, filepath)
         print('Dataset cached.')
-
-
-if __name__ == '__main__':
-    create_dataset()
