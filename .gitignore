@@ -114,5 +114,5 @@ dmypy.json
 .pyre/
 *.xml
 *.iml
-*.mid
+maestro/
 .DS_Store
