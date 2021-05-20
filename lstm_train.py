@@ -1,7 +1,10 @@
-""" This module prepares midi file data and feeds it to the neural
-    network for training """
+"""Training module for the LSTM network.
 
-import pickle
+This module retrieves the midi file data and feeds it to the LSTM neural network for training. The final network
+weightings are saved and output to 'lstm_model.hdf5' to be used for model prediction.
+"""
+
+# Import libraries.
 import numpy as np
 from keras.models import Sequential
 from keras.layers import Dense
@@ -12,33 +15,17 @@ from keras.layers import BatchNormalization as BatchNorm
 from keras.utils import np_utils
 from keras.callbacks import ModelCheckpoint
 
+# Import modules.
 import midi_reader
-import midi_generator
 
+# Settings.
 TIME_STEPS = 100
 
 
-def train_network():
-    """ Train a Neural Network to generate music """
-    notes_array = midi_reader.get_midi_dataset()
-
-    # Convert 2D array into 1D array.
-    notes = [element for note in notes_array for element in note]
-
-    # get amount of pitch names
-    n_vocab = len(set(notes))
-
-    network_input, network_output = prepare_training_sequences(notes, n_vocab)
-
-    model = create_network(network_input, n_vocab)
-
-    train(model, network_input, network_output)
-
-
 def prepare_training_sequences(notes, n_vocab):
-    """ Prepare the sequences used by the Neural Network """
+    """Prepare the sequences used by the Neural Network"""
 
-    # get all pitch names
+    # Create a sorted list of all individual elements.
     pitch_names = sorted(set(item for item in notes))
 
     # create a dictionary to map pitches to integers
@@ -70,16 +57,16 @@ def create_network(network_input, n_vocab):
     """ create the structure of the neural network """
     model = Sequential()
     model.add(LSTM(
-        512,
+        128,
         input_shape=(network_input.shape[1], network_input.shape[2]),
         recurrent_dropout=0.3,
         return_sequences=True
     ))
-    model.add(LSTM(512, return_sequences=True, recurrent_dropout=0.3,))
-    model.add(LSTM(512))
+    model.add(LSTM(128, return_sequences=True, recurrent_dropout=0.3,))
+    model.add(LSTM(128))
     model.add(BatchNorm())
     model.add(Dropout(0.3))
-    model.add(Dense(256))
+    model.add(Dense(128))
     model.add(Activation('relu'))
     model.add(BatchNorm())
     model.add(Dropout(0.3))
@@ -92,7 +79,7 @@ def create_network(network_input, n_vocab):
 
 def train(model, network_input, network_output):
     """ train the neural network """
-    filepath = 'lstm_weights.hdf5'
+    filepath = 'weights/lstm_model.hdf5'
     checkpoint = ModelCheckpoint(
         filepath,
         monitor='loss',
@@ -102,8 +89,21 @@ def train(model, network_input, network_output):
     )
     callbacks_list = [checkpoint]
 
-    model.fit(network_input, network_output, epochs=200, batch_size=128, callbacks=callbacks_list)
+    model.fit(network_input, network_output, epochs=50, batch_size=128, callbacks=callbacks_list)
 
 
 if __name__ == '__main__':
-    train_network()
+
+    # Get cashed dataset.
+    notes_array = midi_reader.get_midi_dataset()
+
+    # Convert 2D array into 1D array.
+    notes = [element for note in notes_array for element in note]
+
+    # Setup LSTM network.
+    n_vocab = len(set(notes))
+    network_input, network_output = prepare_training_sequences(notes, n_vocab)
+    model = create_network(network_input, n_vocab)
+
+    # Train model.
+    train(model, network_input, network_output)

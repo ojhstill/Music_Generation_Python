@@ -1,3 +1,10 @@
+"""Training module for the WaveNet network.
+
+This module retrieves the midi file data and feeds it to the WaveNet neural network for training. The final network
+weightings are saved and output to 'wavenet_model.h5' to be used for model prediction.
+"""
+
+# Import libraries.
 import numpy as np
 import keras.backend as k
 from keras.layers import *
@@ -6,9 +13,10 @@ from keras.callbacks import *
 from collections import Counter
 from sklearn.model_selection import train_test_split
 
+# Import modules.
 import midi_reader
-import midi_generator
 
+# Settings.
 FREQ_THRESHOLD = 25
 TIME_STEPS = 100
 OUTPUT_LENGTH = 64
@@ -30,7 +38,6 @@ def wavenet(unique_x, unique_y):
     model.add(Dropout(0.2))
     model.add(MaxPool1D(2))
 
-    # model.add(Conv1D(256,5,activation='relu'))
     model.add(GlobalMaxPool1D())
 
     model.add(Dense(256, activation='relu'))
@@ -107,7 +114,7 @@ if __name__ == "__main__":
 
     model = wavenet(unique_x, unique_y)
 
-    mc = ModelCheckpoint('wavenet_weights.h5', monitor='val_loss', mode='min', save_best_only=True, verbose=1)
+    mc = ModelCheckpoint('weights/wavenet_model.h5', monitor='val_loss', mode='min', save_best_only=True, verbose=1)
 
     history = model.fit(np.array(x_tr), np.array(y_tr), batch_size=128, epochs=50,
                         validation_data=(np.array(x_val), np.array(y_val)), verbose=1, callbacks=[mc])

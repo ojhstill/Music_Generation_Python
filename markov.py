@@ -1,15 +1,26 @@
-import glob
-import random
-from music21 import stream, note, chord
+"""Module for the Markov chain model.
 
+This module retrieves the midi file data and constructs a weighted graph structure using unique notes and note
+transitions. After construction, a random starting node is selected based on note occurrence in the score. Successive
+nodes are randomly selected from the original notes neighbour array and are weighted to their transition occurrence in
+the score. The output array is passed on to 'midi_generator.py' to convert the array to a MIDI file.
+"""
+
+# Import libraries.
+import random
+from music21 import stream, note
+
+# Import modules.
 import midi_reader
 import midi_generator
 
+# Settings.
+OUTPUT_LENGTH = 64
+
+# Array setup.
 data_graph = []
 markov_out = []
 s = stream.Stream()
-
-OUTPUT_LENGTH = 64
 
 # Get parsed midi data.
 notes_array = midi_reader.get_midi_dataset()
@@ -20,7 +31,7 @@ notes = [element for note in notes_array for element in note]
 # Create a sorted list of all individual elements.
 pitch_names = sorted(set(item for item in notes))
 
-print("Creating Graph")
+print('Creating Markov graph...')
 
 # Setup a node for each individual element with element count and neighbour array.
 for pitch in pitch_names:
@@ -54,9 +65,9 @@ for i in range(len(notes)-1):
             'nbs_count': 1
         })
 
-# print(json.dumps(data_graph, indent=2, sort_keys=False))
+print('Markov graph created.')
 
-print("Generating Score")
+print('Predicting sequence...')
 
 # Choose a random integer within the note's total count.
 random_int = random.choice(range(1, len(notes)))
@@ -90,5 +101,7 @@ for generated_note in range(OUTPUT_LENGTH - 1):
             # Append neighbour to data out.
             markov_out.append(neighbour['nbs_pitch'])
             break
+
+print('Prediction complete.')
 
 midi_generator.create_midi(markov_out, 'markov')

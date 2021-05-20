@@ -1,24 +1,29 @@
+"""MIDI reader module.
+
+Reads and parses all MIDI files within the 'dataset' file path using 'music21' library representation. Data is
+serialised and cached to a data file for use in model training modules.
+"""
+
+# Import libraries.
 import os
-import glob
 import pickle
-import numpy as np
 from music21 import converter, instrument, note, chord, pitch, interval
 
-# File path directory to midi training data.
-FILE_PATH = 'maestro/'
+# File path directory to training dataset.
+FILE_PATH = 'dataset/'
 
 
 def get_notes(file):
-    """ Get all the notes and chords from the midi files in the ./midi_songs directory """
+
     notes = []
 
-    print("Parsing %s" % file)
+    print('Parsing %s...' % file)
 
     # Parse all midi files within directory.
     midi = converter.parse(file)
     notes_to_parse = None
 
-    # Transpose to the same key of C major.
+    # Transpose to the key of C major.
     k = midi.analyze('key')
     i = interval.Interval(k.tonic, pitch.Pitch('C'))
     transposed_midi = midi.transpose(i)
@@ -31,38 +36,45 @@ def get_notes(file):
 
     for element in notes_to_parse:
         if isinstance(element, note.Note):
+            # If element is an single notes, append pitch name.
             notes.append(str(element.pitch))
         elif isinstance(element, chord.Chord):
+            # If element is a chord, append a chain of intervals from root for each note.
             notes.append('.'.join(str(n) for n in element.normalOrder))
+
+    print('File parsed.')
 
     return notes
 
 
 def get_midi_dataset():
 
+    print('Loading dataset...')
+
+    # Return cashed notes array.
     with open('data/notes', 'rb') as filepath:
         return pickle.load(filepath)
 
 
 def create_dataset():
 
-    notes_array = []
+    print('Creating dataset...')
 
     # Find all midi files within file path directory.
-    # for root, dirs, files in os.walk(FILE_PATH):
-    #     for file in files:
-    #         if file.endswith('.mid'):
-    #             # Extract all midi data from each midi file.
-    #             notes_array.append(get_notes(root + '/' + file))
-    files = [i for i in os.listdir(FILE_PATH) if i.endswith(".mid")]
-    notes_array = [get_notes(FILE_PATH + i) for i in files]
+    notes_array = []
+    for root, dirs, files in os.walk(FILE_PATH):
+        for file in files:
+            if file.endswith('.mid') or file.endswith('.midi'):
+                # Extract all midi data from each midi file.
+                notes_array.append(get_notes(root + '/' + file))
 
+    print('Dataset created.')
+
+    # Cache notes array to 'notes'
     with open('data/notes', 'wb') as filepath:
         pickle.dump(notes_array, filepath)
-
-    return notes_array
+        print('Dataset cached.')
 
 
 if __name__ == '__main__':
-    # create_dataset()
-    print(get_midi_dataset())
+    create_dataset()

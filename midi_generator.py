@@ -1,3 +1,10 @@
+"""MIDI generation module.
+
+Creates a MIDI file from a prediction array output by interpreting and converting the data back into musical
+representation by 'music21'.
+"""
+
+# Import libraries.
 from music21 import instrument, note, chord, stream
 import time
 
@@ -5,6 +12,9 @@ import time
 def create_midi(prediction_output, network_type):
     """ convert the output from the prediction to notes and create a midi file
         from the notes """
+
+    print('Generating MIDI file...')
+
     offset = 0
     output_notes = []
 
@@ -36,4 +46,7 @@ def create_midi(prediction_output, network_type):
     file_name = 'output_' + network_type + '_' + time.strftime("%Y%m%d-%H%M%S") + '.mid'
 
     midi_stream.write('midi', fp=file_name)
+
+    print('MIDI file generated.')
+
     midi_stream.show()

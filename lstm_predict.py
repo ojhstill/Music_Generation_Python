@@ -1,91 +1,54 @@
-import pickle
-import numpy as np
-from keras.models import Sequential
-from keras.layers import Dense
-from keras.layers import Dropout
-from keras.layers import LSTM
-from keras.layers import Activation
-from keras.layers import BatchNormalization as BatchNorm
-from keras.utils import np_utils
-from keras.callbacks import ModelCheckpoint
+"""Prediction module for the LSTM network.
 
+This module uses the weights defined in 'lstm_model.hdf5' to create a LSTM network. The network predicts a sequence
+of notes based on the original dataset and outputs to an array. The output array is passed on to 'midi_generator.py' to
+convert the array to a MIDI file.
+"""
+
+# Import libraries.
+import numpy as np
+from keras.models import load_model
+
+# Import modules.
 import midi_reader
 import midi_generator
 
+# Settings.
 TIME_STEPS = 100
 OUTPUT_LENGTH = 64
 
 
-def generate():
-    """ Generate a piano midi file """
-    # Load the notes used to train the model
-    notes = midi_reader.get_midi_dataset()
-
-    # Get all pitch names
-    pitch_names = sorted(set(item for item in notes))
-    # Get all pitch names
-    n_vocab = len(set(notes))
-
-    network_input, normalized_input = prepare_sequences(notes, pitch_names, n_vocab)
-    model = create_network(normalized_input, n_vocab)
-
-    # Load the weights to each node.
-    model.load_weights('lstm_weights.hdf5')
-
-    prediction_output = generate_notes(model, network_input, pitch_names, n_vocab)
-    midi_generator.create_midi(prediction_output, 'lstm')
-
-
 def prepare_sequences(notes, pitch_names, n_vocab):
-    """ Prepare the sequences used by the Neural Network """
-    # map between notes and integers and back
+    """Prepare the sequences used by the neural network."""
+
+    # Create dictionary map between unique notes and integers.
     note_to_int = dict((note, number) for number, note in enumerate(pitch_names))
 
+    # Array setup.
     network_input = []
     output = []
+
+    # Create network shape for number of time steps.
     for i in range(0, len(notes) - TIME_STEPS, 1):
         sequence_in = notes[i:i + TIME_STEPS]
         sequence_out = notes[i + TIME_STEPS]
         network_input.append([note_to_int[char] for char in sequence_in])
         output.append(note_to_int[sequence_out])
 
+    # Reshape and normalise the input into a format compatible with LSTM layers.
     n_patterns = len(network_input)
-
-    # reshape the input into a format compatible with LSTM layers
     normalized_input = np.reshape(network_input, (n_patterns, TIME_STEPS, 1))
-    # normalize input
     normalized_input = normalized_input / float(n_vocab)
 
     return network_input, normalized_input
 
 
-def create_network(network_input, n_vocab):
-    """ create the structure of the neural network """
-    model = Sequential()
-    model.add(LSTM(
-        512,
-        input_shape=(network_input.shape[1], network_input.shape[2]),
-        recurrent_dropout=0.3,
-        return_sequences=True
-    ))
-    model.add(LSTM(512, return_sequences=True, recurrent_dropout=0.3,))
-    model.add(LSTM(512))
-    model.add(BatchNorm())
-    model.add(Dropout(0.3))
-    model.add(Dense(256))
-    model.add(Activation('relu'))
-    model.add(BatchNorm())
-    model.add(Dropout(0.3))
-    model.add(Dense(n_vocab))
-    model.add(Activation('softmax'))
-    model.compile(loss='categorical_crossentropy', optimizer='rmsprop')
-
-    return model
-
-
 def generate_notes(model, network_input, pitchnames, n_vocab):
-    """ Generate notes from the neural network based on a sequence of notes """
-    # pick a random sequence from the input as a starting point for the prediction
+    """Predict note sequence from the neural network based on trained model."""
+
+    print('Predicting sequence...')
+
+    # Pick a random sequence from the input as a starting point for the prediction.
     start = np.random.randint(0, len(network_input)-1)
 
     int_to_note = dict((number, note) for number, note in enumerate(pitchnames))
@@ -111,4 +74,21 @@ def generate_notes(model, network_input, pitchnames, n_vocab):
 
 
 if __name__ == '__main__':
-    generate()
+
+    # Get cashed dataset.
+    notes_array = midi_reader.get_midi_dataset()
+
+    # Convert 2D array into 1D array.
+    notes = [element for note in notes_array for element in note]
+
+    # Setup LSTM network.
+    pitch_names = sorted(set(item for item in notes))
+    n_vocab = len(set(notes))
+    network_input, normalized_input = prepare_sequences(notes, pitch_names, n_vocab)
+
+    # Create model from trained weights.
+    model = load_model('weights/lstm_model.hdf5')
+
+    # Predict and generate MIDI output sequence.
+    prediction_output = generate_notes(model, network_input, pitch_names, n_vocab)
+    midi_generator.create_midi(prediction_output, 'lstm')
