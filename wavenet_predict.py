@@ -1,8 +1,8 @@
 """Prediction module for the WaveNet network.
 
-This module uses the weights defined in 'wavenet_model.h5' to create a WaveNet network. The network predicts a
-sequence of notes based on the original dataset and outputs to an array. The output array is passed on to
-'midi_generator.py' to convert the array to a MIDI file.
+This module uses the weights defined in 'wavenet_model.h5' to create a WaveNet network. The network predicts a sequence
+of notes based on the original dataset and outputs to an array. The output array is passed on to 'midi_generator.py' to
+convert the array to a MIDI file.
 """
 
 # Import libraries.
@@ -45,7 +45,6 @@ if __name__ == "__main__":
 
     temp = []
     for note in notes:
-        # for note in element:
         if note in frequent_notes:
             temp.append(note)
     new_music.append(temp)

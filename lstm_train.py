@@ -23,37 +23,40 @@ TIME_STEPS = 100
 
 
 def prepare_training_sequences(notes, n_vocab):
-    """Prepare the sequences used by the Neural Network"""
+    """Prepare the sequences used by the neural network."""
+
+    print('Preparing training sequence...')
 
     # Create a sorted list of all individual elements.
     pitch_names = sorted(set(item for item in notes))
 
-    # create a dictionary to map pitches to integers
+    # Create dictionary map between unique notes and integers.
     note_to_int = dict((note, number) for number, note in enumerate(pitch_names))
 
     network_input = []
     network_output = []
 
-    # create input sequences and the corresponding outputs
+    # Create network sequences for number of time steps.
     for i in range(0, len(notes) - TIME_STEPS, 1):
         sequence_in = notes[i:i + TIME_STEPS]
         sequence_out = notes[i + TIME_STEPS]
         network_input.append([note_to_int[char] for char in sequence_in])
         network_output.append(note_to_int[sequence_out])
 
+    # Reshape and normalise the input into a format compatible with LSTM layers.
     n_patterns = len(network_input)
-
-    # reshape the input into a format compatible with LSTM layers
     network_input = np.reshape(network_input, (n_patterns, TIME_STEPS, 1))
-    # normalize input
     network_input = network_input / float(n_vocab)
 
     network_output = np_utils.to_categorical(network_output)
+
+    print('Training sequence prepared.')
 
     return network_input, network_output
 
 
 def lstm(network_input, n_vocab):
+    """LSTM model architecture."""
 
     # Create LSTM network structure.
     model = Sequential()

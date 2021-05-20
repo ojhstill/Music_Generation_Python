@@ -21,24 +21,25 @@ OUTPUT_LENGTH = 64
 def prepare_sequences(notes, pitch_names, n_vocab):
     """Prepare the sequences used by the neural network."""
 
+    print('Preparing sequence...')
+
     # Create dictionary map between unique notes and integers.
     note_to_int = dict((note, number) for number, note in enumerate(pitch_names))
 
-    # Array setup.
     network_input = []
-    output = []
 
-    # Create network shape for number of time steps.
+    # Create network sequences for number of time steps.
     for i in range(0, len(notes) - TIME_STEPS, 1):
         sequence_in = notes[i:i + TIME_STEPS]
         sequence_out = notes[i + TIME_STEPS]
         network_input.append([note_to_int[char] for char in sequence_in])
-        output.append(note_to_int[sequence_out])
 
     # Reshape and normalise the input into a format compatible with LSTM layers.
     n_patterns = len(network_input)
     normalized_input = np.reshape(network_input, (n_patterns, TIME_STEPS, 1))
     normalized_input = normalized_input / float(n_vocab)
+
+    print('Sequence prepared.')
 
     return network_input, normalized_input
 
@@ -56,7 +57,7 @@ def generate_notes(model, network_input, pitchnames, n_vocab):
     pattern = network_input[start]
     prediction_output = []
 
-    # generate 500 notes
+    # Generate notes sequence.
     for note_index in range(OUTPUT_LENGTH):
         prediction_input = np.reshape(pattern, (1, len(pattern), 1))
         prediction_input = prediction_input / float(n_vocab)

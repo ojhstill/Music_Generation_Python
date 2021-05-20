@@ -23,6 +23,7 @@ OUTPUT_LENGTH = 64
 
 
 def wavenet(unique_x, unique_y):
+    """WaveNet model architecture."""
 
     # Create LSTM network structure.
     model.add(Embedding(len(unique_x), 100, input_length=32, trainable=True))
@@ -73,7 +74,6 @@ if __name__ == "__main__":
 
     temp = []
     for note in notes:
-        # for note in element:
         if note in frequent_notes:
             temp.append(note)
     new_music.append(temp)
