@@ -88,7 +88,7 @@ if __name__ == '__main__':
     network_input, normalized_input = prepare_sequences(notes, pitch_names, n_vocab)
 
     # Create model from trained weights.
-    model = load_model('weights/lstm_model.hdf5')
+    model = load_model('data/lstm_model.hdf5')
 
     # Predict and generate MIDI output sequence.
     prediction_output = generate_notes(model, network_input, pitch_names, n_vocab)

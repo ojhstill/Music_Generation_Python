@@ -114,7 +114,7 @@ if __name__ == "__main__":
 
     model = wavenet(unique_x, unique_y)
 
-    mc = ModelCheckpoint('weights/wavenet_model.h5', monitor='val_loss', mode='min', save_best_only=True, verbose=1)
+    mc = ModelCheckpoint('data/wavenet_model.h5', monitor='val_loss', mode='min', save_best_only=True, verbose=1)
 
     history = model.fit(np.array(x_tr), np.array(y_tr), batch_size=128, epochs=50,
                         validation_data=(np.array(x_val), np.array(y_val)), verbose=1, callbacks=[mc])

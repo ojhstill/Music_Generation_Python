@@ -83,7 +83,7 @@ if __name__ == "__main__":
 
     x_tr, x_val, y_tr, y_val = train_test_split(x_seq, y_seq, test_size=0.2, random_state=0)
 
-    model = load_model('weights/wavenet_model.h5')
+    model = load_model('data/wavenet_model.h5')
 
     print('Predicting sequence...')
 

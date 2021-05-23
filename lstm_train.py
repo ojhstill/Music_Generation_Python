@@ -83,7 +83,7 @@ def lstm(network_input, n_vocab):
 
 def train(model, network_input, network_output):
 
-    filepath = 'weights/lstm_model.hdf5'
+    filepath = 'data/lstm_model.hdf5'
     checkpoint = ModelCheckpoint(
         filepath,
         monitor='loss',
