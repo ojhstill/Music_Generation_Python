@@ -23,7 +23,7 @@ def prepare_sequences(notes, pitch_names, n_vocab):
 
     print('Preparing sequence...')
 
-    # Create dictionary map between unique notes and integers.
+    # Create dictionary map between unique music elements and integers.
     note_to_int = dict((note, number) for number, note in enumerate(pitch_names))
 
     network_input = []

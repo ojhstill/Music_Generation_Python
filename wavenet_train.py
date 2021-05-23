@@ -25,7 +25,7 @@ OUTPUT_LENGTH = 64
 def wavenet(unique_x, unique_y):
     """WaveNet model architecture."""
 
-    # Create LSTM network structure.
+    # Create WaveNet network structure.
     model.add(Embedding(len(unique_x), 100, input_length=32, trainable=True))
 
     model.add(Conv1D(64, 3, padding='causal', activation='relu'))
